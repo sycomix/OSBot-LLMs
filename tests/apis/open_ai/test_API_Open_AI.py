@@ -35,7 +35,5 @@ class test_API_Open_AI(TestCase):
     def test_ask_one_question_no_history__async_mode(self):
         question  = 'count to 10, only reply with the numbers, without any spaces or commands, like this 12'
         generator = self.api_open_ai.ask_one_question_no_history(question, async_mode=True)
-        answers = []
-        for answer in generator:
-            answers.append(answer)
+        answers = list(generator)
         assert answers == ['', '123', '456', '789', '10']

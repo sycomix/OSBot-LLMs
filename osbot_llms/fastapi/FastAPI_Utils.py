@@ -16,10 +16,7 @@ def fastapi_routes(router, include_default=False):
     for route in router.routes:
         if include_default is False and route.path in FAST_API_DEFAULT_ROUTES_PATHS:
             continue
-        if type(route) is Mount:
-            methods = ['GET', 'HEAD']
-        else:
-            methods = sorted(route.methods)
+        methods = ['GET', 'HEAD'] if type(route) is Mount else sorted(route.methods)
         route = {"http_path": route.path, "method_name": route.name, "http_methods": methods}
         routes.append(route)
     return routes

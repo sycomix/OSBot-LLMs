@@ -43,8 +43,7 @@ class API_Open_AI:
         partial_message = ""
         for chunk in response:
             if len(chunk['choices'][0]['delta']) != 0:
-                new_content = chunk['choices'][0]['delta']['content']
-                yield new_content
+                yield chunk['choices'][0]['delta']['content']
                 #partial_message = partial_message + new_content
                 #yield partial_message
 
@@ -58,25 +57,25 @@ class API_Open_AI:
 
     def ask_using_messages(self, messages, model=None, async_mode=False):
         generator    = self.create(messages, model=model)
-        if async_mode:
-            return generator
-        full_answer = ""
-
-        for item in generator:
-            full_answer += item
-        return full_answer
+        return generator if async_mode else "".join(generator)
 
     def ask_using_system_prompts(self, user_prompt, system_prompts=None, user_history=None, async_mode=False):
         messages = []
         if system_prompts:
-            for system_prompt in system_prompts:
-                messages.append({"role": "system", "content": system_prompt})
+            messages.extend(
+                {"role": "system", "content": system_prompt}
+                for system_prompt in system_prompts
+            )
         if user_history:
             for item in user_history:
                 question = item.get('question')
                 answer   = item.get('answer')
-                messages.append({"role": "user"     , "content": question})
-                messages.append({"role": "assistant", "content": answer})
+                messages.extend(
+                    (
+                        {"role": "user", "content": question},
+                        {"role": "assistant", "content": answer},
+                    )
+                )
         messages.append({"role": "user", "content": user_prompt})
 
         #pprint(messages)
