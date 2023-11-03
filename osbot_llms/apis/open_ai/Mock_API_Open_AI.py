@@ -49,10 +49,14 @@ class Mock_API_Open_AI(API_Open_AI):
         self.__setup_mocked_content()
 
     def __get_hard_coded_content_from_messages(self, messages):
-        for entry in self.mocked_content:
-            if entry.get('messages') == messages:
-                return entry.get('content')
-        return '...mocked content for message: {}'.format(messages)
+        return next(
+            (
+                entry.get('content')
+                for entry in self.mocked_content
+                if entry.get('messages') == messages
+            ),
+            f'...mocked content for message: {messages}',
+        )
 
     def __setup_mocked_content(self):
         for (question, answer) in MESSAGE_CONTENT_PAIRS:

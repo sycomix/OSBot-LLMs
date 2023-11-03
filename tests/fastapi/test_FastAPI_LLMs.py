@@ -62,7 +62,7 @@ class test_FastAPI_LLMs(TestCase):
 
         expected_answer = {"model":None,"answer":"42"}
         expected_status = 200
-        path            = f"/open_ai/prompt_simple"
+        path = "/open_ai/prompt_simple"
         response        = self.test_client.post(path, json=data)
 
         assert response.status_code == expected_status
